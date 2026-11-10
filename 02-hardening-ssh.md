@@ -42,6 +42,16 @@ systemctl restart ssh
 
 ---
 
+## Confirmar o valor real
+
+```bash
+sudo sshd -T | grep -i permitrootlogin
+```
+
+Saída esperada: `permitrootlogin no`
+
+---
+
 ## ⚠️ Atenção
 
 **Antes de fechar a sessão atual**, abra um novo terminal e teste o login com seu usuário:

@@ -2,38 +2,31 @@
 
 ## Por que fazer isso?
 
-Senhas podem ser adivinhadas por força bruta. Chaves SSH funcionam de forma diferente: são matematicamente impossíveis de adivinhar. Ao desabilitar o login por senha e usar apenas chaves, você elimina completamente essa classe de ataque.
+Senha pode ser adivinhada por força bruta. Uma chave não: para entrar, é preciso ter a chave privada que corresponde à pública cadastrada no servidor.
 
 ---
 
 ## Como funciona
 
-Uma chave SSH tem duas partes:
-
-- **Chave privada** — fica no seu computador. Nunca compartilhe.
-- **Chave pública** — vai para o servidor. Pode ser compartilhada.
-
-O servidor só permite acesso a quem tiver a chave privada correspondente à pública cadastrada.
+- **Chave privada:** fica só no seu computador. Nunca compartilhe.
+- **Chave pública:** vai para o servidor. Pode ser compartilhada.
 
 ---
 
-## 1. Gerar a chave no seu computador
-
-No PowerShell (Windows) ou terminal (Linux/Mac):
+## 1. Gerar a chave (no seu PC)
 
 ```bash
 ssh-keygen -t ed25519 -C "vps-pessoal"
 ```
 
-- `-t ed25519` — algoritmo moderno e seguro
-- `-C` — comentário para identificar a chave
+- `-t ed25519`: algoritmo moderno e seguro
+- `-C`: comentário para identificar a chave
 
-Quando perguntar onde salvar, pressione **Enter** para o local padrão.
-Quando perguntar a passphrase, recomendo definir uma — é uma senha que protege sua chave privada.
+Aperte **Enter** para aceitar o local padrão. Defina uma **passphrase**: é uma senha que protege a chave privada no seu PC.
 
 ---
 
-## 2. Copiar a chave pública para o servidor
+## 2. Copiar a chave pública para a VPS
 
 **Windows (PowerShell):**
 
@@ -49,61 +42,103 @@ ssh-copy-id -i ~/.ssh/id_ed25519.pub seunome@IP_DA_VPS
 
 ---
 
-## 3. Testar antes de continuar
+## 3. Ajustar permissões na VPS
 
-Abra um **novo terminal** e tente logar:
+Dentro da VPS, rode:
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+
+O SSH é rigoroso com permissões. Se a pasta ou o arquivo estiverem abertos demais, ele ignora a chave em silêncio e volta a pedir senha. É um dos problemas mais comuns nessa etapa.
+
+---
+
+## 4. Testar antes de continuar
+
+Abra um **novo terminal** e entre:
 
 ```bash
 ssh seunome@IP_DA_VPS
 ```
 
-Deve pedir a passphrase da chave (não a senha do servidor). Se logar, a chave está funcionando.
+Ele deve pedir a **passphrase da chave**, não a senha do servidor. Se entrar, a chave está funcionando.
 
 ---
 
-## 4. Desabilitar login por senha
+## 5. Desabilitar login por senha
 
 Edite o arquivo principal:
 
 ```bash
-nano /etc/ssh/sshd_config
+sudo nano /etc/ssh/sshd_config
 ```
+
+Procure ou adicione:
 
 ```
 PasswordAuthentication no
 ```
 
-Verifique também os overrides:
+Confira se existe algum arquivo extra que sobrescreva essa opção:
 
 ```bash
-nano /etc/ssh/sshd_config.d/50-cloud-init.conf
+ls /etc/ssh/sshd_config.d/
 ```
 
-```
-PasswordAuthentication no
-```
+Se aparecer algum `.conf` (por exemplo `50-cloud-init.conf`) com `PasswordAuthentication yes`, troque para `no`. Se não houver nenhum, o passo acima basta.
 
 Reinicie o SSH:
 
 ```bash
-systemctl restart ssh
+sudo systemctl restart ssh
 ```
 
 ---
 
-## ⚠️ Atenção
+## 6. Confirmar o valor real
 
-- Só desabilite o login por senha **depois** de confirmar que a chave funciona
-- Guarde sua chave privada em local seguro — sem ela, você perde o acesso ao servidor
-- A passphrase pedida no login é da **chave**, não do servidor — isso é esperado
+O comando abaixo mostra a configuração efetiva, já com todos os arquivos somados:
+
+```bash
+sudo sshd -T | grep -i passwordauthentication
+```
+
+Saída esperada:
+
+```
+passwordauthentication no
+```
+
+---
+
+## ⚠️ Antes de desligar a senha
+
+- Só faça o passo 5 depois de confirmar o login com chave (passo 4).
+- Guarde a chave privada em local seguro. Sem ela, você fica sem acesso.
+- A passphrase é da **chave**, não do servidor. Por isso o terminal a pede.
+
+---
+
+## Se der errado
+
+- **Ele pede a senha do servidor em vez da passphrase:** a chave não está sendo usada. Confira o passo 3 e se a chave pública está em `~/.ssh/authorized_keys`.
+- **Ficou trancado fora:** use o console web do painel da hospedagem para entrar e corrigir a configuração. Por isso o passo 4 vem antes do passo 5.
+
+---
+
+## Erros que aconteceram
+
+- **Login por chave não funcionava:** a causa eram permissões abertas demais em `~/.ssh`. Resolvido com o passo 3.
 
 ---
 
 ## ✅ Resultado esperado
 
-- Login funciona apenas com chave SSH
-- Tentativas de login por senha são recusadas
-- Ataques de força bruta por senha tornam-se inúteis
+- Login funciona só com a chave
+- Tentativa de login por senha é recusada
+- `sshd -T` mostra `passwordauthentication no`
 
 ---
 

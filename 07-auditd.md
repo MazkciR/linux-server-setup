@@ -50,6 +50,12 @@ O que cada parte significa:
 
 ---
 
+## Aviso sobre ruído
+
+A regra de `acesso_negado` registra muitos eventos em servidores com tráfego. Se o log crescer demais, remova essa linha do arquivo e rode `augenrules --load` de novo.
+
+---
+
 ## 3. Carregar as regras
 
 ```bash
