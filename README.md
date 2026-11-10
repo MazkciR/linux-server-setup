@@ -44,6 +44,13 @@ Este guia mostra o mínimo que você precisa fazer antes de colocar qualquer apl
 | [05 — Chave SSH](./05-chave-ssh.md) | Eliminar login por senha completamente |
 | [06 — Unattended Upgrades](./06-unattended-upgrades.md) | Atualizações de segurança automáticas |
 | [07 — Auditd](./07-auditd.md) | Monitorar acessos e comandos críticos |
+| [08 — Docker](./08-docker.md) | Imagem, container, volume e Docker Compose |
+| [09 — Caddy](./09-caddy.md) | Servidor web com HTTPS automático |
+| [10 — Deploy de sites](./10-deploy-sites.md) | Atualizar sites com Git sem expor o repositório |
+| [11 — CrowdSec](./11-crowdsec.md) | Detectar ataques nos logs, em modo monitor |
+| [12 — Monitoramento](./12-monitoramento.md) | Prometheus, Grafana e Netdata com acesso por túnel SSH |
+| [13 — n8n com Postgres](./13-n8n.md) | Automação em container, com redes Docker isoladas |
+| [14 — Backup criptografado](./14-backup.md) | Backup com AES-256, restauração testada e regra 3-2-1 |
 
 ---
 
@@ -60,6 +67,13 @@ Após subir uma VPS nova, faça isso nesta ordem:
 - [ ] Desabilitar login por senha
 - [ ] Verificar Unattended Upgrades
 - [ ] Instalar e configurar Auditd
+- [ ] Instalar Docker e entender imagem, container e volume
+- [ ] Subir o Caddy com HTTPS automático
+- [ ] Publicar os sites sem expor o `.git`
+- [ ] Instalar o CrowdSec em modo monitor
+- [ ] Montar monitoramento local (Prometheus, Grafana, Netdata)
+- [ ] Subir o n8n com Postgres, sem porta pública
+- [ ] Configurar backup criptografado e testar a restauração
 
 ---
 
