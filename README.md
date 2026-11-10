@@ -86,4 +86,4 @@ Nunca publique IPs, senhas, chaves privadas ou hashes de `/etc/shadow` em reposi
 
 ## 👤 Autor
 
-Feito por [Enrico](https://github.com/Jakeschincariol) como parte do portfólio de estudos em segurança da informação.
+Feito por [Enrico](https://github.com/MazkciR) como parte do portfólio de estudos em segurança da informação.

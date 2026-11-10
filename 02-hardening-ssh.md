@@ -30,7 +30,7 @@ O Ubuntu 24.04 tem uma pasta que pode sobrescrever o `sshd_config`:
 cat /etc/ssh/sshd_config.d/*.conf
 ```
 
-Se algum arquivo tiver `PasswordAuthentication yes`, altere para `no` agora (você vai precisar disso no passo 05).
+Se algum arquivo tiver `PasswordAuthentication yes`, **não mude agora**. Só desligue a senha no passo 05, depois de confirmar que o login por chave funciona. Mudar antes disso pode te trancar fora do servidor.
 
 ---
 
